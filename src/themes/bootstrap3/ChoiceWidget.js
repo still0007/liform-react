@@ -3,20 +3,21 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { Field } from 'redux-form'
 import _ from 'lodash'
+import fieldPath from '../../util'
 
 const renderSelect = field => {
     const className = classNames([
         'form-group',
         { 'has-error' : field.meta.touched && field.meta.error }
     ])
-    const options = field.schema.enum
-    const optionNames = field.schema.enum_titles || options
-
+    const options = field.schema.source.map(item => item.value)
+    const optionNames = field.schema.source.map(item => item.title)
 
     const selectOptions = _.zipObject(options, optionNames)
     return (
         <div className={className}>
             <label className="control-label" htmlFor={'field-'+field.name}>{field.label}</label>
+            <a className="field-doc" href={"getDoc.do?path="+fieldPath(field)} target="_BLANK"><span className="glyphicon glyphicon-question-sign"></span></a>
             <select {...field.input} className="form-control" id={'field-'+field.name} required={field.required} multiple={field.multiple}>
                 { !field.required && !field.multiple && <option key={''} value={''}>{field.placeholder}</option> }
                 { _.map(selectOptions, (name, value) => {
